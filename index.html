@@ -305,6 +305,7 @@
         .then(function (json) {
           var list = validStories(json);
           if (list) { stories = list; index = 0; elapsed = 0; buildLenses(); showStory(false); }
+          if (list) layoutLenses();
         })
         .catch(function () { /* keep the built-in list */ });
     } catch (e) { /* keep the built-in list */ }
