@@ -1,0 +1,435 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>MDQ Blog Program — featured stories</title>
+<meta name="color-scheme" content="dark">
+<style>
+  :root {
+    color-scheme: dark;
+    --color-bg: #331b70;
+    --color-fg: #ffffff;
+    --color-muted: #e8ddff;
+    --color-accent: #c8eaff;
+    --color-border: rgba(220, 220, 255, .8);
+    --grad-a: #331b70;
+    --grad-b: #86529f;
+    --blush: #f2acac;
+    --mauve: #ad69a3;
+    --navy: #172862;
+    --intro: #f1e8ff;
+    --card-a: rgba(43, 23, 93, .97);
+    --card-b: rgba(37, 43, 107, .95);
+    --card-hover: #322568;
+    --btn: rgba(29, 19, 73, .75);
+    --btn-hover: #38236c;
+    --btn-border: rgba(244, 226, 255, .65);
+    --lens-border: rgba(208, 191, 255, .8);
+    --lens-ring: rgba(119, 227, 255, .55);
+  }
+  * { box-sizing: border-box; }
+  html, body { height: 100%; margin: 0; padding: 0; background: transparent; }
+  body {
+    color: var(--color-fg);
+    font-family: "Segoe UI", "Segoe UI Web (West European)", -apple-system, Roboto, Helvetica, Arial, sans-serif;
+    overflow: hidden;
+  }
+  .showcase { container-type: size; height: 100%; width: 100%; }
+  .banner {
+    position: relative;
+    display: grid;
+    grid-template-columns: 44% 56%;
+    height: 100%;
+    min-height: 0;
+    isolation: isolate;
+    overflow: hidden;
+    border-radius: 4px;
+    background:
+      radial-gradient(ellipse at 100% 0, var(--blush), var(--mauve) 25%, transparent 65%),
+      radial-gradient(ellipse at 0 100%, var(--navy), transparent 70%),
+      linear-gradient(115deg, var(--grad-a), var(--grad-b));
+  }
+  .copy {
+    align-self: center;
+    min-width: 0;
+    padding-block: clamp(16px, 5cqb, 36px);
+    padding-inline-start: clamp(20px, 3.4cqi, 38px);
+    padding-inline-end: clamp(8px, 2cqi, 20px);
+    z-index: 30;
+  }
+  .brand {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    font-size: clamp(16px, 1.9cqi, 21px);
+    font-weight: 600;
+    margin-block-end: clamp(14px, 7cqb, 40px);
+  }
+  .brand .ms-logo { width: clamp(26px, 3.2cqi, 36px); height: auto; display: block; }
+  .eyebrow {
+    color: var(--color-muted);
+    font-size: 11px;
+    letter-spacing: 2px;
+    margin: 0 0 clamp(8px, 3cqb, 16px);
+    text-transform: uppercase;
+  }
+  h2 {
+    color: var(--color-fg);
+    font-size: clamp(26px, 4.6cqi, 48px);
+    font-weight: 600;
+    letter-spacing: -1px;
+    line-height: 1.1;
+    margin: 0;
+    overflow-wrap: anywhere;
+  }
+  .intro {
+    color: var(--intro);
+    font-size: clamp(13px, 1.5cqi, 16px);
+    line-height: 1.6;
+    margin: clamp(10px, 4cqb, 22px) 0 0;
+  }
+  .stage { position: relative; min-height: 0; perspective: 1100px; }
+  .orbit { position: absolute; inset: 0; pointer-events: none; }
+  .lens {
+    position: absolute;
+    inset-inline-start: 0;
+    inset-block-start: 0;
+    border-radius: 50%;
+    border: 1.5px solid var(--lens-border);
+    background: linear-gradient(140deg, rgba(181, 220, 255, .6), rgba(74, 121, 239, .23) 35%, rgba(31, 43, 158, .45) 72%, rgba(127, 80, 231, .5));
+    box-shadow: inset 3px 2px 3px rgba(236, 205, 255, .85), inset -4px -6px 5px rgba(23, 38, 149, .7), 0 4px 12px rgba(27, 11, 78, .2);
+    pointer-events: auto;
+    cursor: pointer;
+    will-change: transform;
+    transition: border-color .25s, box-shadow .25s;
+  }
+  .lens::after {
+    content: "";
+    position: absolute;
+    inset: 5px;
+    border-radius: 50%;
+    border: 1px solid var(--lens-ring);
+  }
+  .lens.is-hot, .lens.is-current {
+    border-color: #fff;
+    box-shadow: inset 3px 2px 3px rgba(236, 205, 255, .95), inset -4px -6px 5px rgba(23, 38, 149, .7), 0 0 26px rgba(200, 234, 255, .55);
+  }
+  .story {
+    position: absolute;
+    inset-inline: 8%;
+    inset-block-start: 22%;
+    display: block;
+    padding: clamp(16px, 3cqi, 28px);
+    border-radius: 16px;
+    border: 1px solid var(--color-border);
+    background: linear-gradient(125deg, var(--card-a), var(--card-b));
+    box-shadow: 0 24px 45px rgba(23, 7, 65, .35), inset 0 1px hsla(0, 0%, 100%, .3);
+    color: var(--color-fg);
+    text-decoration: none;
+    transform: translateZ(45px) rotateY(-3deg);
+    transform-origin: 80% 70%;
+    transition: transform .75s cubic-bezier(.2, .7, .1, 1), opacity .5s, background .25s, border-color .25s;
+    z-index: 40;
+  }
+  .story[data-shown="false"] {
+    opacity: 0;
+    pointer-events: none;
+    transform: translate3d(65px, 45px, -170px) rotateY(-65deg) scale(.35);
+  }
+  .story:hover { background: var(--card-hover); border-color: #fff; }
+  .story:focus-visible, button:focus-visible, .lens:focus-visible { outline: 3px solid #fff; outline-offset: 4px; }
+  .tag { display: block; color: var(--color-accent); font-size: 10px; letter-spacing: 1.6px; }
+  h3 {
+    color: var(--color-fg);
+    font-size: clamp(18px, 2.6cqi, 30px);
+    font-weight: 600;
+    letter-spacing: -.45px;
+    line-height: 1.25;
+    margin: clamp(10px, 3.5cqb, 22px) 0 clamp(12px, 4cqb, 25px);
+    overflow-wrap: anywhere;
+  }
+  .read { font-size: 12px; font-weight: 600; }
+  .controls {
+    position: absolute;
+    inset-inline: 0;
+    inset-block-end: clamp(12px, 4.5cqb, 27px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    z-index: 50;
+  }
+  button {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    border: 1px solid var(--btn-border);
+    background: var(--btn);
+    color: var(--color-fg);
+    cursor: pointer;
+    font: 25px/1 "Segoe UI", sans-serif;
+    transition: background .2s, transform .2s;
+  }
+  button[data-action="pause"] { width: auto; min-width: 76px; padding: 0 13px; border-radius: 22px; font-size: 12px; }
+  button:hover { background: var(--btn-hover); transform: translateY(-1px); }
+  button:disabled { cursor: default; opacity: .7; }
+  .count { min-width: 42px; font-size: 12px; font-variant-numeric: tabular-nums; text-align: center; }
+  .sr, .announce { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+
+  /* Narrow embeds: copy on top, stage fills what is left */
+  @container (max-width: 650px) {
+    .banner { grid-template-columns: 1fr; grid-template-rows: auto minmax(0, 1fr); }
+    .copy { align-self: start; padding: clamp(14px, 3cqb, 24px) 22px 0; }
+    .brand { margin-block-end: clamp(8px, 2.5cqb, 18px); }
+    h2 { font-size: clamp(24px, 7cqi, 35px); }
+    .intro { font-size: 13px; margin-block-start: clamp(6px, 1.5cqb, 12px); }
+    .story { inset-block-start: 10%; padding: 18px 20px; transform: none; }
+    h3 { font-size: clamp(17px, 5cqi, 25px); margin: 10px 0 12px; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .story { transform: none; transition: none; }
+    .lens { will-change: auto; }
+  }
+</style>
+</head>
+<body>
+<div class="showcase" id="showcase">
+  <section class="banner" aria-label="MDQ featured blog stories">
+    <div class="copy">
+      <div class="brand"><svg class="ms-logo" viewBox="0 0 23 23" aria-hidden="true" focusable="false"><rect x="1" y="1" width="10" height="10" fill="#f25022"/><rect x="12" y="1" width="10" height="10" fill="#7fba00"/><rect x="1" y="12" width="10" height="10" fill="#00a4ef"/><rect x="12" y="12" width="10" height="10" fill="#ffb900"/></svg><span>Microsoft</span></div>
+      <p class="eyebrow" data-ui="eyebrow">DISCOVERY · QUANTUM</p>
+      <h2 data-ui="heading">MDQ Blog Program</h2>
+      <p class="intro" data-ui="intro">Ideas moving science forward.<br>Explore stories from our research community.</p>
+    </div>
+    <div class="stage" data-ui="stage">
+      <div class="orbit" data-ui="orbit"></div>
+      <a class="story" data-ui="story" target="_blank" rel="noopener noreferrer" href="#">
+        <span class="tag">MDQ BLOG PROGRAM</span>
+        <h3 data-ui="title"></h3>
+        <span class="read">Read the published story ↗<span class="sr"> (opens in a new tab)</span></span>
+      </a>
+      <div class="controls">
+        <button type="button" data-action="prev" aria-label="Previous story">‹</button>
+        <span class="count" data-ui="count"></span>
+        <button type="button" data-action="next" aria-label="Next story">›</button>
+        <button type="button" data-action="pause" aria-pressed="false">Pause</button>
+      </div>
+      <span class="announce" data-ui="announce" role="status" aria-live="polite"></span>
+    </div>
+  </section>
+</div>
+<script>
+(function () {
+  "use strict";
+  var DEFAULT_STORIES = [
+    {
+      "title": "Phage therapy with inspectable agents",
+      "url": "https://techcommunity.microsoft.com/blog/microsoft-discovery-blog/developing-bioinformatics-workflows-for-phage-therapy-with-inspectable-agents/4560876"
+    },
+    {
+      "title": "Reading the hidden world of environmental viromes",
+      "url": "https://techcommunity.microsoft.com/blog/microsoft-discovery-blog/decoding-environmental-viromes-amplifying-human-expertise-with-microsoft-discove/4555806"
+    },
+    {
+      "title": "Exploring chip design with AI",
+      "url": "https://techcommunity.microsoft.com/blog/microsoft-discovery-blog/from-ad-astra-to-semper-disco-learning-chip-design-with-microsoft-discovery/4554904"
+    },
+    {
+      "title": "Scientific AI meets RF engineering",
+      "url": "https://techcommunity.microsoft.com/blog/microsoft-discovery-blog/execution-optimization-and-exploration-evaluating-scientific-ai-through-rf-engin/4554513"
+    },
+    {
+      "title": "New directions for redox flow batteries",
+      "url": "https://techcommunity.microsoft.com/blog/microsoft-discovery-blog/reinventing-organic-redox-flow-batteries-with-microsoft-discovery/4552343"
+    },
+    {
+      "title": "Adaptive scientific discovery",
+      "url": "https://techcommunity.microsoft.com/blog/microsoft-discovery-blog/adaptive-by-design-how-microsoft-discovery-explores-science/4552705"
+    }
+  ];
+  var LENSES = 13;              // discs in the orbit
+  var ORBIT_PERIOD_MS = 20000;  // one full revolution of the discs
+
+  // ---- Options via URL query string (all optional) -------------------------
+  // ?heading=…&eyebrow=…&intro=Line one|Line two&interval=9000&autoplay=0&stories=stories.json
+  var qs = new URLSearchParams(window.location.search);
+  function clampNum(v, lo, hi, dflt) { v = parseInt(v, 10); return isNaN(v) ? dflt : Math.min(hi, Math.max(lo, v)); }
+  var cfg = {
+    heading: (qs.get("heading") || "").slice(0, 80),
+    eyebrow: (qs.get("eyebrow") || "").slice(0, 60),
+    intro: (qs.get("intro") || "").slice(0, 240),
+    interval: clampNum(qs.get("interval"), 3000, 60000, 9000),
+    autoplay: qs.get("autoplay") !== "0",
+    storiesUrl: qs.get("stories") || "stories.json"
+  };
+
+  var root = document.getElementById("showcase");
+  var $ = function (sel) { return root.querySelector(sel); };
+  var stage = $('[data-ui="stage"]'), orbit = $('[data-ui="orbit"]'), card = $('[data-ui="story"]');
+  var titleEl = $('[data-ui="title"]'), countEl = $('[data-ui="count"]'), announceEl = $('[data-ui="announce"]');
+  var pauseBtn = $('[data-action="pause"]');
+
+  if (cfg.heading) $('[data-ui="heading"]').textContent = cfg.heading;
+  if (cfg.eyebrow) $('[data-ui="eyebrow"]').textContent = cfg.eyebrow;
+  if (cfg.intro) {
+    var p = $('[data-ui="intro"]'); p.textContent = "";
+    cfg.intro.split("|").forEach(function (line, i) {
+      if (i) p.appendChild(document.createElement("br"));
+      p.appendChild(document.createTextNode(line.trim()));
+    });
+  }
+
+  // ---- Story list ----------------------------------------------------------
+  function validStories(list) {
+    if (!Array.isArray(list) || !list.length || list.length > 20) return null;
+    var out = [];
+    for (var i = 0; i < list.length; i++) {
+      var s = list[i];
+      if (!s || typeof s.title !== "string" || !s.title.trim() || s.title.length > 140) return null;
+      if (typeof s.url !== "string" || !/^https:\/\//i.test(s.url)) return null;
+      out.push({ title: s.title.trim(), url: s.url });
+    }
+    return out;
+  }
+  var stories = DEFAULT_STORIES.slice();
+
+  // Optional: a same-origin stories.json next to this file overrides the built-in list.
+  function loadStories() {
+    try {
+      if (window.location.protocol === "file:" || typeof fetch !== "function") return;
+      var u = new URL(cfg.storiesUrl, window.location.href);
+      if (u.origin !== window.location.origin) return;
+      fetch(u.href, { cache: "no-cache" })
+        .then(function (r) { return r.ok ? r.json() : null; })
+        .then(function (json) {
+          var list = validStories(json);
+          if (list) { stories = list; index = 0; elapsed = 0; buildLenses(); showStory(false); }
+        })
+        .catch(function () { /* keep the built-in list */ });
+    } catch (e) { /* keep the built-in list */ }
+  }
+
+  // ---- State ---------------------------------------------------------------
+  var index = 0, elapsed = 0, orbitMs = 0, lastTs = 0, raf = 0;
+  var hoverCard = false, focusWithin = false, visible = true, hotLens = -1;
+  var reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
+  var paused = !cfg.autoplay || reduceMotion.matches;
+  var lenses = [];
+
+  function buildLenses() {
+    orbit.textContent = "";
+    lenses = [];
+    for (var i = 0; i < LENSES; i++) {
+      var d = document.createElement("div");
+      d.className = "lens";
+      d.dataset.index = String(i);
+      var s = stories[i % stories.length];
+      d.title = s.title;
+      d.setAttribute("aria-hidden", "true");
+      orbit.appendChild(d);
+      lenses.push(d);
+    }
+  }
+
+  function revealCard() { card.dataset.shown = "true"; }
+  function showStory(announce) {
+    var s = stories[index];
+    card.href = s.url;
+    titleEl.textContent = s.title;
+    countEl.textContent = (index + 1) + " / " + stories.length;
+    if (announce) announceEl.textContent = "Story " + (index + 1) + ": " + s.title;
+    lenses.forEach(function (l, i) { l.classList.toggle("is-current", i === index); });
+    revealCard();
+  }
+  function step(delta) { index = (index + delta + stories.length) % stories.length; elapsed = 0; showStory(true); }
+  function updatePauseBtn() {
+    pauseBtn.textContent = reduceMotion.matches ? "Motion off" : paused ? "Play" : "Pause";
+    pauseBtn.disabled = reduceMotion.matches;
+    pauseBtn.setAttribute("aria-pressed", String(paused));
+  }
+
+  // ---- Orbit geometry (same maths as the original web part) ----------------
+  var W = stage.clientWidth, H = stage.clientHeight;
+  function layoutLenses() {
+    var size = Math.min(.57 * W, 248), radius = Math.min(.3 * W, 148);
+    lenses.forEach(function (l, i) {
+      var a = 3.00196631343 - 2 * i * Math.PI / LENSES + orbitMs / ORBIT_PERIOD_MS * 2 * Math.PI;
+      var depth = (.23 + 1.143 * Math.cos(a) + 2.17 * Math.sin(a) + 2.5) / 5; // 0..1, "closer" discs are bigger
+      var hot = i === hotLens;
+      var scale = (.8 + .2 * depth) * (hot ? 1.1 : 1);
+      l.style.width = l.style.height = size + "px";
+      l.style.transform = "translate(" + (.53 * W + radius * Math.cos(a) - size / 2) + "px," +
+        (.46 * H - .76 * radius * Math.sin(a) - size / 2) + "px) rotate(67.04deg) scaleY(.7579934) scale(" + scale + ")";
+      l.style.zIndex = String(hot ? 25 : Math.round(20 * depth));
+      l.style.opacity = String(hot ? 1 : .4 + .45 * depth);
+    });
+  }
+
+  function frame(ts) {
+    var dt = lastTs ? Math.min(ts - lastTs, 80) : 0;
+    lastTs = ts;
+    var hold = paused || reduceMotion.matches || hoverCard || focusWithin || hotLens >= 0 || !visible || document.hidden;
+    if (!hold) {
+      orbitMs += dt;
+      elapsed += dt;
+      if (elapsed > cfg.interval) { elapsed = 0; index = (index + 1) % stories.length; showStory(false); }
+      card.dataset.shown = String(elapsed < cfg.interval - 1500 || stories.length === 1);
+      layoutLenses();
+    }
+    raf = requestAnimationFrame(frame);
+  }
+
+  // ---- Interaction ---------------------------------------------------------
+  $('[data-action="prev"]').addEventListener("click", function () { step(-1); });
+  $('[data-action="next"]').addEventListener("click", function () { step(1); });
+  pauseBtn.addEventListener("click", function () { paused = !paused; elapsed = 0; revealCard(); updatePauseBtn(); });
+  card.addEventListener("pointerenter", function () { hoverCard = true; });
+  card.addEventListener("pointerleave", function () { hoverCard = false; });
+  root.addEventListener("focusin", function () { focusWithin = true; revealCard(); });
+  root.addEventListener("focusout", function (e) { focusWithin = root.contains(e.relatedTarget); });
+  root.addEventListener("keydown", function (e) {
+    if (e.key === "ArrowLeft") { step(-1); e.preventDefault(); }
+    if (e.key === "ArrowRight") { step(1); e.preventDefault(); }
+  });
+
+  // Discs: hover pauses the orbit and lights the disc up; click jumps to its story.
+  orbit.addEventListener("pointerover", function (e) {
+    var l = e.target.closest ? e.target.closest(".lens") : null;
+    if (!l) return;
+    hotLens = Number(l.dataset.index);
+    lenses.forEach(function (x, i) { x.classList.toggle("is-hot", i === hotLens); });
+    layoutLenses();
+  });
+  orbit.addEventListener("pointerout", function (e) {
+    var l = e.target.closest ? e.target.closest(".lens") : null;
+    if (!l || (e.relatedTarget && l.contains(e.relatedTarget))) return;
+    hotLens = -1;
+    l.classList.remove("is-hot");
+    layoutLenses();
+  });
+  orbit.addEventListener("click", function (e) {
+    var l = e.target.closest ? e.target.closest(".lens") : null;
+    if (!l) return;
+    var target = Number(l.dataset.index) % stories.length;
+    if (target === index) { window.open(stories[index].url, "_blank", "noopener"); return; }
+    index = target; elapsed = 0; showStory(true);
+  });
+
+  new ResizeObserver(function () { W = stage.clientWidth; H = stage.clientHeight; layoutLenses(); }).observe(stage);
+  if ("IntersectionObserver" in window) {
+    new IntersectionObserver(function (entries) { visible = entries[0].isIntersecting; }).observe(stage);
+  }
+  reduceMotion.addEventListener("change", function () { if (reduceMotion.matches) paused = true; revealCard(); updatePauseBtn(); });
+
+  // ---- Go -------------------------------------------------------------------
+  buildLenses();
+  showStory(false);
+  updatePauseBtn();
+  layoutLenses();
+  raf = requestAnimationFrame(frame);
+  loadStories();
+})();
+</script>
+</body>
+</html>
