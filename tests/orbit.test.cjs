@@ -1,7 +1,7 @@
 const assert = require('node:assert/strict');
 const orbit = require('../orbit-motion.js');
 const close = (actual, expected, tolerance=1e-8) => assert.ok(Math.abs(actual-expected)<tolerance,`${actual} != ${expected}`);
-const configurations = [[366.62,520,false],[552,520,false],[390,403,true],[320,360,true]];
+const configurations = [[327,398,false],[552,398,false],[390,281,true],[289,250,true]];
 let samples=0,departures=0;
 for(const [width,height,narrow] of configurations){
   const g=orbit.geometry(width,height,narrow);
@@ -26,18 +26,22 @@ for(const [width,height,narrow] of configurations){
       assert.equal(gaps.filter(gap=>Math.abs(gap-orbit.TAU/orbit.COUNT*2)<1e-8).length,1);
       assert.equal(gaps.filter(gap=>Math.abs(gap-orbit.TAU/orbit.COUNT)<1e-8).length,orbit.COUNT-2);
     }
-    const selected=orbit.select(phase,g,19000);
+    const selected=orbit.select(phase,g,8000);
     if(selected>=0){
       departures++;
       assert.ok(orbit.visible(slots[selected],g));
-      const returnStart=orbit.future(phase,2400+14000);
+      const returnStart=orbit.future(phase,2400+3000);
       assert.ok(orbit.canReturn(returnStart,selected,g,2600));
       const landing=orbit.slot(orbit.future(returnStart,2600),selected,g);
       assert.ok(orbit.visible(landing,g));
+      for(const rounding of [-80,33,80,160,240]){
+        assert.ok(orbit.canReturn(orbit.future(returnStart,rounding),selected,g,2600),
+          'Frame rounding must not prolong the three-second hold');
+      }
     }
     samples++;
   }
-  // Any arbitrarily long reading hold must have a visible return opportunity
+  // A return delayed by a resize must have a visible landing opportunity
   // within one revolution, without changing the selected slot's identity.
   for(const heldFor of [0,45000,180000,789123]){
     const phase=orbit.future(2.1,heldFor);
@@ -49,7 +53,7 @@ for(const [width,height,narrow] of configurations){
   }
   let canDepart=false;
   for(let ms=0;ms<=orbit.PERIOD/orbit.COUNT;ms+=50){
-    if(orbit.select(orbit.future(3.00196631343,ms),g,19000)>=0){canDepart=true;break;}
+    if(orbit.select(orbit.future(3.00196631343,ms),g,8000)>=0){canDepart=true;break;}
   }
   assert.ok(canDepart,'Departure must become available for every layout');
 }

@@ -4,7 +4,7 @@
   if(typeof module==='object'&&module.exports)module.exports=factory();
   else root.MDQOrbit=factory();
 })(typeof window!=='undefined'?window:this,function(){
-  var TAU=Math.PI*2,COUNT=13,PERIOD=160000;
+  var TAU=Math.PI*2,COUNT=13,PERIOD=67368;
   function geometry(width,height,narrow){
     return {width:width,height:height,cx:width*(narrow?1.0:1.10),cy:height*1.03,
       radius:Math.min(width*.82,height*(narrow?.80:.72)),
@@ -29,6 +29,10 @@
     for(var i=0;i<COUNT;i++){
       var start=slot(phase,i,g),end=slot(future(phase,duration),i,g);
       if(!visible(start,g)||!visible(end,g))continue;
+      // Keep the landing away from a visibility boundary. Frame rounding must
+      // not turn a three-second hold into a wait for another revolution.
+      if(!visible(slot(future(phase,duration-240),i,g),g)||
+         !visible(slot(future(phase,duration+240),i,g),g))continue;
       var distance=Math.pow(start.x-g.width*.85,2)+Math.pow(start.y-g.height*.5,2);
       if(distance<score){score=distance;best=i;}
     }

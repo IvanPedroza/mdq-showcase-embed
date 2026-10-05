@@ -135,7 +135,7 @@
   </section>
 </div>
 <script src="glass-morph.js"></script>
-<script src="orbit-motion.js"></script>
+<script src="orbit-motion.js?v=3"></script>
 <script>
 (function () {
   "use strict";
@@ -166,7 +166,7 @@
     }
   ];
   var model = window.MDQOrbit, LENSES = model.COUNT;
-  var GAP_MS = 1600, OUT_MS = 2400, READ_MS = 14000, IN_MS = 2600;
+  var GAP_MS = 1600, OUT_MS = 2400, READ_MS = 3000, IN_MS = 2600;
   var qs = new URLSearchParams(window.location.search);
   var root = document.getElementById("showcase");
   var $ = function (selector) { return root.querySelector(selector); };
@@ -174,7 +174,7 @@
   var card = $('[data-ui="story"]'), title = $('[data-ui="story-title"]');
   var stories = DEFAULT_STORIES.slice(), storyIndex = 0;
   var phase = 3.00196631343, state = "idle", elapsed = 0, lastTs = 0, raf = 0;
-  var visible = true, reading = false, focused = false, selected = -1;
+  var visible = true, selected = -1;
   var lenses = [], W = stage.clientWidth, H = stage.clientHeight;
   var reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
   // Explicit embed opt-in for hosts whose desktop reports reduced motion.
@@ -280,11 +280,11 @@
         if(candidate>=0){selected=candidate;state="out";elapsed=0;}
       }
     }else if(state==="out"){
-      elapsed+=dt;if(elapsed>=OUT_MS){state="hold";elapsed=0;}
+      elapsed+=dt;if(elapsed>=OUT_MS){state="hold";elapsed-=OUT_MS;}
     }else if(state==="hold"){
-      if(!(reading||focused))elapsed+=dt;
-      // After a long hover, wait for THIS gap's next visible return window.
-      if(elapsed>=READ_MS&&!(reading||focused)&&model.canReturn(phase,selected,geometry(),IN_MS)){state="in";elapsed=0;}
+      elapsed+=dt;
+      // Keep the readable hold to three seconds, then return to the same slot.
+      if(elapsed>=READ_MS&&model.canReturn(phase,selected,geometry(),IN_MS)){state="in";elapsed=0;}
     }else{
       elapsed+=dt;
       if(elapsed>=IN_MS){state="idle";elapsed=0;selected=-1;storyIndex=(storyIndex+1)%stories.length;setStory();}
@@ -302,10 +302,6 @@
     cancelAnimationFrame(raf); raf = 0; lastTs = 0;
     if (!document.hidden && visible) raf = requestAnimationFrame(frame);
   }
-  card.addEventListener("pointerenter", function () { reading = true; });
-  card.addEventListener("pointerleave", function () { reading = false; });
-  card.addEventListener("focus", function () { focused = true; });
-  card.addEventListener("blur", function () { focused = false; });
   document.addEventListener("visibilitychange", syncMotion);
   reduceMotion.addEventListener("change", function () { state="idle";elapsed=0;selected=-1;syncMotion(); });
   new ResizeObserver(function () {
