@@ -1,10 +1,10 @@
 # MDQ showcase embed
 
-MDQ Blog Program hero for a fixed 520 px SharePoint iframe.
+MDQ Blog Program hero for a fixed 442 px SharePoint iframe.
 
 Run `python3 -m http.server 4173 --bind 127.0.0.1` in this directory, then open
 `http://127.0.0.1:4173/` for the banner. The optional local-only `preview.html`
-wrapper provides a 520 px desktop/mobile comparison frame.
+wrapper provides a 442 px desktop/mobile comparison frame.
 
 ## Current design
 
@@ -39,8 +39,23 @@ The deployment includes `index.html`, `glass-morph.js`,
 1,001,694 bytes. The PNG is the source render and not a runtime dependency.
 No CDN or third-party runtime dependencies. All asset requests are same-origin.
 
-The SharePoint embed URL and fixed 520 px height remain unchanged. Keep all
-published content public. Preview screenshots and local review notes are excluded.
+The SharePoint iframe is 442 px high (15% shorter than the original 520 px). By default the animation
+respects the visitor's OS reduced-motion preference. If a desktop reports
+reduced motion but animation is intentionally required, explicitly opt in with
+`https://ivanpedroza.github.io/mdq-showcase-embed/?motion=on` as the iframe URL.
+This affects only this banner; it does not change device settings. Hidden tabs
+and offscreen frames still suspend rendering. Remove the query to restore the
+OS preference. Keep all published content public. Preview screenshots and local
+review notes are excluded.
+
+## SharePoint embed
+
+Edit the Embed web part, replace its iframe code, then republish. Leave
+"Resize to fit the page" off so SharePoint keeps the intended height:
+
+```html
+<iframe src="https://ivanpedroza.github.io/mdq-showcase-embed/?motion=on" width="100%" height="442" title="MDQ Blog Program showcase" style="border:0" loading="lazy"></iframe>
+```
 
 ## Verification
 

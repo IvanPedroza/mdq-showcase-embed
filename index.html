@@ -177,6 +177,10 @@
   var visible = true, reading = false, focused = false, selected = -1;
   var lenses = [], W = stage.clientWidth, H = stage.clientHeight;
   var reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
+  // Explicit embed opt-in for hosts whose desktop reports reduced motion.
+  // The unconfigured page continues to respect each visitor's OS preference.
+  var forceMotion = qs.get("motion") === "on";
+  function motionReduced() { return reduceMotion.matches && !forceMotion; }
   var cardVisible = false;
   var surface = stage.querySelector("canvas"), glass = window.createGlassScene(surface);
   surface.addEventListener("glassready", function () { layout(); });
@@ -206,7 +210,7 @@
     return value * value * (3 - 2 * value);
   }
   function amountOut() {
-    if (reduceMotion.matches) return 1;
+    if (motionReduced()) return 1;
     if (state === "out") return smooth(elapsed / OUT_MS);
     if (state === "hold") return 1;
     if (state === "in") return 1 - smooth(elapsed / IN_MS);
@@ -216,7 +220,7 @@
     var g=geometry(),out=amountOut();
     var cardX=card.offsetLeft+card.offsetWidth/2,cardY=card.offsetTop+card.offsetHeight/2;
     var positions=lenses.map(function(lens,i){return model.slot(phase,i,g);});
-    if(reduceMotion.matches&&selected<0)selected=0;
+    if(motionReduced()&&selected<0)selected=0;
     // Let glass extend across the stage boundary; only the banner crops it.
     var pad=Math.ceil(g.diameter*.65);
     surface.style.left=surface.style.top=-pad+"px";
@@ -261,7 +265,7 @@
     card.style.borderRadius=(20+200*travel)+"px";
     card.style.setProperty("--text-opacity",String(smooth((out-.65)/.35)));
     card.classList.toggle("glass-fallback",!ready);
-    var available=reduceMotion.matches||state==="hold";
+    var available=motionReduced()||state==="hold";
     if(available!==cardVisible){cardVisible=available;card.setAttribute("aria-hidden",String(!available));card.tabIndex=available?0:-1;}
   }
   function buildLenses(){
@@ -290,9 +294,9 @@
     raf=0;
     if(document.hidden||!visible){lastTs=0;return;}
     var dt=lastTs?Math.min(ts-lastTs,80):0;lastTs=ts;
-    if(!reduceMotion.matches)advance(dt);
+    if(!motionReduced())advance(dt);
     layout();
-    if(!reduceMotion.matches)raf=requestAnimationFrame(frame);
+    if(!motionReduced())raf=requestAnimationFrame(frame);
   }
   function syncMotion() {
     cancelAnimationFrame(raf); raf = 0; lastTs = 0;
