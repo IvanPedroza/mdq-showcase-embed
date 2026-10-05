@@ -8,188 +8,112 @@
 <style>
   :root {
     color-scheme: dark;
-    --color-bg: #331b70;
-    --color-fg: #ffffff;
-    --color-muted: #e8ddff;
-    --color-accent: #c8eaff;
-    --color-border: rgba(220, 220, 255, .8);
-    --grad-a: #331b70;
-    --grad-b: #86529f;
-    --blush: #f2acac;
-    --mauve: #ad69a3;
-    --navy: #172862;
-    --intro: #f1e8ff;
-    --card-a: rgba(43, 23, 93, .97);
-    --card-b: rgba(37, 43, 107, .95);
-    --card-hover: #322568;
-    --btn: rgba(29, 19, 73, .75);
-    --btn-hover: #38236c;
-    --btn-border: rgba(244, 226, 255, .65);
-    --lens-border: rgba(208, 191, 255, .8);
-    --lens-ring: rgba(119, 227, 255, .55);
+    --color-fg: #fff;
+    --color-muted: #efe4ff;
+    --grad-a: #41257e;
+    --grad-b: #9763ac;
+    --blush: #f5c5b9;
+    --mauve: #ca8cb9;
+    --navy: #34246f;
+    --lens-edge: rgba(206, 199, 255, .85);
   }
   * { box-sizing: border-box; }
   html, body { height: 100%; margin: 0; padding: 0; background: transparent; }
   body {
     color: var(--color-fg);
-    font-family: "Segoe UI", "Segoe UI Web (West European)", -apple-system, Roboto, Helvetica, Arial, sans-serif;
+    font-family: "Segoe UI", -apple-system, BlinkMacSystemFont, Roboto, Helvetica, Arial, sans-serif;
     overflow: hidden;
   }
   .showcase { container-type: size; height: 100%; width: 100%; }
   .banner {
     position: relative;
     display: grid;
-    grid-template-columns: 44% 56%;
+    grid-template-columns: 54% 46%;
     height: 100%;
-    min-height: 0;
     isolation: isolate;
-    overflow: hidden;
-    border-radius: 4px;
+    overflow: clip;
     background:
-      radial-gradient(ellipse at 100% 0, var(--blush), var(--mauve) 25%, transparent 65%),
-      radial-gradient(ellipse at 0 100%, var(--navy), transparent 70%),
+      radial-gradient(ellipse at 100% 0, var(--blush), var(--mauve) 27%, transparent 69%),
+      radial-gradient(ellipse at 0 100%, var(--navy), transparent 72%),
       linear-gradient(115deg, var(--grad-a), var(--grad-b));
   }
   .copy {
-    align-self: center;
+    align-self: start;
     min-width: 0;
-    padding-block: clamp(16px, 5cqb, 36px);
-    padding-inline-start: clamp(20px, 3.4cqi, 38px);
-    padding-inline-end: clamp(8px, 2cqi, 20px);
+    padding: clamp(48px, 18cqb, 98px) 0 0 clamp(28px, 6cqi, 76px);
     z-index: 30;
+    pointer-events: none;
   }
   .brand {
     display: flex;
     align-items: center;
-    gap: 9px;
-    font-size: clamp(16px, 1.9cqi, 21px);
+    gap: 10px;
+    font-size: clamp(19px, 2.2cqi, 27px);
     font-weight: 600;
-    margin-block-end: clamp(14px, 7cqb, 40px);
+    margin-block-end: clamp(34px, 12cqb, 64px);
   }
-  .brand .ms-logo { width: clamp(26px, 3.2cqi, 36px); height: auto; display: block; }
-  .eyebrow {
-    color: var(--color-muted);
-    font-size: 11px;
-    letter-spacing: 2px;
-    margin: 0 0 clamp(8px, 3cqb, 16px);
-    text-transform: uppercase;
-  }
+  .ms-logo { width: clamp(28px, 3cqi, 38px); height: auto; display: block; }
   h2 {
-    color: var(--color-fg);
-    font-size: clamp(26px, 4.6cqi, 48px);
+    font-size: clamp(34px, 5.15cqi, 66px);
     font-weight: 600;
-    letter-spacing: -1px;
-    line-height: 1.1;
+    letter-spacing: -1.8px;
+    line-height: 1.12;
     margin: 0;
-    overflow-wrap: anywhere;
+    text-wrap: balance;
   }
-  .intro {
-    color: var(--intro);
-    font-size: clamp(13px, 1.5cqi, 16px);
-    line-height: 1.6;
-    margin: clamp(10px, 4cqb, 22px) 0 0;
-  }
-  .stage { position: relative; min-height: 0; perspective: 1100px; }
+  .stage { position: relative; min-width: 0; min-height: 0; }
   .orbit { position: absolute; inset: 0; pointer-events: none; }
+  /* Rendered from the supplied Blender lens with its original material and tilt. */
   .lens {
     position: absolute;
-    inset-inline-start: 0;
-    inset-block-start: 0;
-    border-radius: 50%;
-    border: 1.5px solid var(--lens-border);
-    background: linear-gradient(140deg, rgba(181, 220, 255, .6), rgba(74, 121, 239, .23) 35%, rgba(31, 43, 158, .45) 72%, rgba(127, 80, 231, .5));
-    box-shadow: inset 3px 2px 3px rgba(236, 205, 255, .85), inset -4px -6px 5px rgba(23, 38, 149, .7), 0 4px 12px rgba(27, 11, 78, .2);
-    pointer-events: auto;
-    cursor: pointer;
-    will-change: transform;
-    transition: border-color .25s, box-shadow .25s;
+    top: 0; left: 0;
+    background: url("assets/glass-lens.webp") center / contain no-repeat;
+    pointer-events: none;
+    filter: saturate(1.25) brightness(1.14);
+    will-change: transform, opacity;
   }
-  .lens::after {
-    content: "";
-    position: absolute;
-    inset: 5px;
-    border-radius: 50%;
-    border: 1px solid var(--lens-ring);
-  }
-  .lens.is-hot, .lens.is-current {
-    border-color: #fff;
-    box-shadow: inset 3px 2px 3px rgba(236, 205, 255, .95), inset -4px -6px 5px rgba(23, 38, 149, .7), 0 0 26px rgba(200, 234, 255, .55);
-  }
+  .lens::after { content: ""; position: absolute; inset: 0; background: url("assets/glass-lens-light.webp") center / contain no-repeat; opacity: var(--glint, 0); }
   .story {
     position: absolute;
-    inset-inline: 8%;
-    inset-block-start: 22%;
-    display: block;
-    padding: clamp(16px, 3cqi, 28px);
-    border-radius: 16px;
-    border: 1px solid var(--color-border);
-    background: linear-gradient(125deg, var(--card-a), var(--card-b));
-    box-shadow: 0 24px 45px rgba(23, 7, 65, .35), inset 0 1px hsla(0, 0%, 100%, .3);
-    color: var(--color-fg);
-    text-decoration: none;
-    transform: translateZ(45px) rotateY(-3deg);
-    transform-origin: 80% 70%;
-    transition: transform .75s cubic-bezier(.2, .7, .1, 1), opacity .5s, background .25s, border-color .25s;
-    z-index: 40;
-  }
-  .story[data-shown="false"] {
-    opacity: 0;
-    pointer-events: none;
-    transform: translate3d(65px, 45px, -170px) rotateY(-65deg) scale(.35);
-  }
-  .story:hover { background: var(--card-hover); border-color: #fff; }
-  .story:focus-visible, button:focus-visible, .lens:focus-visible { outline: 3px solid #fff; outline-offset: 4px; }
-  .tag { display: block; color: var(--color-accent); font-size: 10px; letter-spacing: 1.6px; }
-  h3 {
-    color: var(--color-fg);
-    font-size: clamp(18px, 2.6cqi, 30px);
-    font-weight: 600;
-    letter-spacing: -.45px;
-    line-height: 1.25;
-    margin: clamp(10px, 3.5cqb, 22px) 0 clamp(12px, 4cqb, 25px);
-    overflow-wrap: anywhere;
-  }
-  .read { font-size: 12px; font-weight: 600; }
-  .controls {
-    position: absolute;
-    inset-inline: 0;
-    inset-block-end: clamp(12px, 4.5cqb, 27px);
+    left: 3%;
+    top: 24%;
+    width: 88%;
+    min-height: 210px;
+    padding: clamp(23px, 2.6cqi, 34px);
     display: flex;
-    align-items: center;
+    flex-direction: column;
     justify-content: center;
-    gap: 10px;
+    gap: 24px;
+    color: #fff;
+    text-decoration: none;
+    border: 0;
+    border-radius: 20px;
+    background: transparent;
+    transform-origin: center;
+    will-change: transform;
     z-index: 50;
   }
-  button {
-    width: 44px;
-    height: 44px;
-    border-radius: 50%;
-    border: 1px solid var(--btn-border);
-    background: var(--btn);
-    color: var(--color-fg);
-    cursor: pointer;
-    font: 25px/1 "Segoe UI", sans-serif;
-    transition: background .2s, transform .2s;
-  }
-  button[data-action="pause"] { width: auto; min-width: 76px; padding: 0 13px; border-radius: 22px; font-size: 12px; }
-  button:hover { background: var(--btn-hover); transform: translateY(-1px); }
-  button:disabled { cursor: default; opacity: .7; }
-  .count { min-width: 42px; font-size: 12px; font-variant-numeric: tabular-nums; text-align: center; }
-  .sr, .announce { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
-
-  /* Narrow embeds: copy on top, stage fills what is left */
+  .glass-scene { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; filter: saturate(1.25) brightness(1.14); }
+  .stage.has-glass .orbit { visibility: hidden; }
+  .story-copy { position: relative; display: flex; flex-direction: column; gap: inherit; opacity: var(--text-opacity, 0); text-shadow: 0 1px 10px rgba(25, 17, 79, .4); }
+  .story[aria-hidden="true"] { pointer-events: none; }
+  .story:hover .read { text-decoration: underline; text-underline-offset: 4px; }
+  .story.glass-fallback { background: rgba(113, 117, 220, .38); border: 2px solid rgba(145, 232, 255, .8); box-shadow: inset 2px 2px 4px #dbbdff, inset -3px -3px 4px #36499d; }
+  .story:focus-visible { outline: 3px solid #fff; outline-offset: 5px; }
+  .story h3 { margin: 0; font-size: clamp(23px, 2.65cqi, 34px); line-height: 1.2; font-weight: 600; letter-spacing: -.5px; text-wrap: balance; }
+  .story .read { display: block; font-size: 13px; font-weight: 600; color: #efe3ff; }
+  .sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
   @container (max-width: 650px) {
     .banner { grid-template-columns: 1fr; grid-template-rows: auto minmax(0, 1fr); }
-    .copy { align-self: start; padding: clamp(14px, 3cqb, 24px) 22px 0; }
-    .brand { margin-block-end: clamp(8px, 2.5cqb, 18px); }
-    h2 { font-size: clamp(24px, 7cqi, 35px); }
-    .intro { font-size: 13px; margin-block-start: clamp(6px, 1.5cqb, 12px); }
-    .story { inset-block-start: 10%; padding: 18px 20px; transform: none; }
-    h3 { font-size: clamp(17px, 5cqi, 25px); margin: 10px 0 12px; }
+    .copy { align-self: start; padding: 28px 26px 0; }
+    .brand { margin-block-end: 27px; font-size: 20px; }
+    .ms-logo { width: 28px; }
+    h2 { font-size: clamp(29px, 7.8cqi, 44px); letter-spacing: -1px; }
+    .story { left: 7%; top: 20%; width: 86%; min-height: 170px; padding: 24px; gap: 19px; }
+    .story h3 { font-size: clamp(21px, 6cqi, 28px); }
   }
   @media (prefers-reduced-motion: reduce) {
-    .story { transform: none; transition: none; }
-    .lens { will-change: auto; }
+    .lens, .story { will-change: auto; }
   }
 </style>
 </head>
@@ -198,27 +122,20 @@
   <section class="banner" aria-label="MDQ featured blog stories">
     <div class="copy">
       <div class="brand"><svg class="ms-logo" viewBox="0 0 23 23" aria-hidden="true" focusable="false"><rect x="1" y="1" width="10" height="10" fill="#f25022"/><rect x="12" y="1" width="10" height="10" fill="#7fba00"/><rect x="1" y="12" width="10" height="10" fill="#00a4ef"/><rect x="12" y="12" width="10" height="10" fill="#ffb900"/></svg><span>Microsoft</span></div>
-      <p class="eyebrow" data-ui="eyebrow">DISCOVERY · QUANTUM</p>
       <h2 data-ui="heading">MDQ Blog Program</h2>
-      <p class="intro" data-ui="intro">Ideas moving science forward.<br>Explore stories from our research community.</p>
     </div>
     <div class="stage" data-ui="stage">
-      <div class="orbit" data-ui="orbit"></div>
-      <a class="story" data-ui="story" target="_blank" rel="noopener noreferrer" href="#">
-        <span class="tag">MDQ BLOG PROGRAM</span>
-        <h3 data-ui="title"></h3>
-        <span class="read">Read the published story ↗<span class="sr"> (opens in a new tab)</span></span>
+      <div class="orbit" data-ui="orbit" aria-hidden="true"></div>
+      <canvas class="glass-scene" aria-hidden="true"></canvas>
+      <a class="story" data-ui="story" href="#" target="_blank" rel="noopener noreferrer" aria-hidden="true" tabindex="-1" style="opacity:0">
+        <div class="story-copy"><h3 data-ui="story-title"></h3>
+        <span class="read">Read the story <span aria-hidden="true">↗</span><span class="sr"> (opens in a new tab)</span></span></div>
       </a>
-      <div class="controls">
-        <button type="button" data-action="prev" aria-label="Previous story">‹</button>
-        <span class="count" data-ui="count"></span>
-        <button type="button" data-action="next" aria-label="Next story">›</button>
-        <button type="button" data-action="pause" aria-pressed="false">Pause</button>
-      </div>
-      <span class="announce" data-ui="announce" role="status" aria-live="polite"></span>
     </div>
   </section>
 </div>
+<script src="glass-morph.js"></script>
+<script src="orbit-motion.js"></script>
 <script>
 (function () {
   "use strict";
@@ -248,188 +165,170 @@
       "url": "https://techcommunity.microsoft.com/blog/microsoft-discovery-blog/adaptive-by-design-how-microsoft-discovery-explores-science/4552705"
     }
   ];
-  var LENSES = 13;              // discs in the orbit
-  var ORBIT_PERIOD_MS = 20000;  // one full revolution of the discs
-
-  // ---- Options via URL query string (all optional) -------------------------
-  // ?heading=…&eyebrow=…&intro=Line one|Line two&interval=9000&autoplay=0&stories=stories.json
+  var model = window.MDQOrbit, LENSES = model.COUNT;
+  var GAP_MS = 1600, OUT_MS = 2400, READ_MS = 14000, IN_MS = 2600;
   var qs = new URLSearchParams(window.location.search);
-  function clampNum(v, lo, hi, dflt) { v = parseInt(v, 10); return isNaN(v) ? dflt : Math.min(hi, Math.max(lo, v)); }
-  var cfg = {
-    heading: (qs.get("heading") || "").slice(0, 80),
-    eyebrow: (qs.get("eyebrow") || "").slice(0, 60),
-    intro: (qs.get("intro") || "").slice(0, 240),
-    interval: clampNum(qs.get("interval"), 3000, 60000, 9000),
-    autoplay: qs.get("autoplay") !== "0",
-    storiesUrl: qs.get("stories") || "stories.json"
-  };
-
   var root = document.getElementById("showcase");
-  var $ = function (sel) { return root.querySelector(sel); };
-  var stage = $('[data-ui="stage"]'), orbit = $('[data-ui="orbit"]'), card = $('[data-ui="story"]');
-  var titleEl = $('[data-ui="title"]'), countEl = $('[data-ui="count"]'), announceEl = $('[data-ui="announce"]');
-  var pauseBtn = $('[data-action="pause"]');
+  var $ = function (selector) { return root.querySelector(selector); };
+  var stage = $('[data-ui="stage"]'), orbit = $('[data-ui="orbit"]');
+  var card = $('[data-ui="story"]'), title = $('[data-ui="story-title"]');
+  var stories = DEFAULT_STORIES.slice(), storyIndex = 0;
+  var phase = 3.00196631343, state = "idle", elapsed = 0, lastTs = 0, raf = 0;
+  var visible = true, reading = false, focused = false, selected = -1;
+  var lenses = [], W = stage.clientWidth, H = stage.clientHeight;
+  var reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
+  var cardVisible = false;
+  var surface = stage.querySelector("canvas"), glass = window.createGlassScene(surface);
+  surface.addEventListener("glassready", function () { layout(); });
+  function geometry() { return model.geometry(W,H,root.clientWidth<=650); }
 
-  if (cfg.heading) $('[data-ui="heading"]').textContent = cfg.heading;
-  if (cfg.eyebrow) $('[data-ui="eyebrow"]').textContent = cfg.eyebrow;
-  if (cfg.intro) {
-    var p = $('[data-ui="intro"]'); p.textContent = "";
-    cfg.intro.split("|").forEach(function (line, i) {
-      if (i) p.appendChild(document.createElement("br"));
-      p.appendChild(document.createTextNode(line.trim()));
-    });
-  }
-
-  // ---- Story list ----------------------------------------------------------
   function validStories(list) {
     if (!Array.isArray(list) || !list.length || list.length > 20) return null;
     var out = [];
     for (var i = 0; i < list.length; i++) {
       var s = list[i];
-      if (!s || typeof s.title !== "string" || !s.title.trim() || s.title.length > 140) return null;
-      if (typeof s.url !== "string" || !/^https:\/\//i.test(s.url)) return null;
-      out.push({ title: s.title.trim(), url: s.url });
+      if (!s || typeof s.title !== "string" || !s.title.trim() || s.title.length > 140 || typeof s.url !== "string") return null;
+      try {
+        var url = new URL(s.url);
+        if (url.protocol !== "https:" || url.username || url.password) return null;
+        out.push({ title: s.title.trim(), url: url.href });
+      } catch (e) { return null; }
     }
     return out;
   }
-  var stories = DEFAULT_STORIES.slice();
-
-  // Optional: a same-origin stories.json next to this file overrides the built-in list.
-  function loadStories() {
-    try {
-      if (window.location.protocol === "file:" || typeof fetch !== "function") return;
-      var u = new URL(cfg.storiesUrl, window.location.href);
-      if (u.origin !== window.location.origin) return;
-      fetch(u.href, { cache: "no-cache" })
-        .then(function (r) { return r.ok ? r.json() : null; })
-        .then(function (json) {
-          var list = validStories(json);
-          if (list) { stories = list; index = 0; elapsed = 0; buildLenses(); showStory(false); }
-          if (list) layoutLenses();
-        })
-        .catch(function () { /* keep the built-in list */ });
-    } catch (e) { /* keep the built-in list */ }
+  function setStory() {
+    var story = stories[storyIndex];
+    title.textContent = story.title;
+    card.href = story.url;
   }
-
-  // ---- State ---------------------------------------------------------------
-  var index = 0, elapsed = 0, orbitMs = 0, lastTs = 0, raf = 0;
-  var hoverCard = false, focusWithin = false, visible = true, hotLens = -1;
-  var reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
-  var paused = !cfg.autoplay || reduceMotion.matches;
-  var lenses = [];
-
-  function buildLenses() {
-    orbit.textContent = "";
-    lenses = [];
-    for (var i = 0; i < LENSES; i++) {
-      var d = document.createElement("div");
-      d.className = "lens";
-      d.dataset.index = String(i);
-      var s = stories[i % stories.length];
-      d.title = s.title;
-      d.setAttribute("aria-hidden", "true");
-      orbit.appendChild(d);
-      lenses.push(d);
-    }
+  function smooth(value) {
+    value = Math.max(0, Math.min(1, value));
+    return value * value * (3 - 2 * value);
   }
-
-  function revealCard() { card.dataset.shown = "true"; }
-  function showStory(announce) {
-    var s = stories[index];
-    card.href = s.url;
-    titleEl.textContent = s.title;
-    countEl.textContent = (index + 1) + " / " + stories.length;
-    if (announce) announceEl.textContent = "Story " + (index + 1) + ": " + s.title;
-    lenses.forEach(function (l, i) { l.classList.toggle("is-current", i === index); });
-    revealCard();
+  function amountOut() {
+    if (reduceMotion.matches) return 1;
+    if (state === "out") return smooth(elapsed / OUT_MS);
+    if (state === "hold") return 1;
+    if (state === "in") return 1 - smooth(elapsed / IN_MS);
+    return 0;
   }
-  function step(delta) { index = (index + delta + stories.length) % stories.length; elapsed = 0; showStory(true); }
-  function updatePauseBtn() {
-    pauseBtn.textContent = reduceMotion.matches ? "Motion off" : paused ? "Play" : "Pause";
-    pauseBtn.disabled = reduceMotion.matches;
-    pauseBtn.setAttribute("aria-pressed", String(paused));
-  }
-
-  // ---- Orbit geometry (same maths as the original web part) ----------------
-  var W = stage.clientWidth, H = stage.clientHeight;
-  function layoutLenses() {
-    var size = Math.min(.57 * W, 248), radius = Math.min(.3 * W, 148);
-    lenses.forEach(function (l, i) {
-      var a = 3.00196631343 - 2 * i * Math.PI / LENSES + orbitMs / ORBIT_PERIOD_MS * 2 * Math.PI;
-      var depth = (.23 + 1.143 * Math.cos(a) + 2.17 * Math.sin(a) + 2.5) / 5; // 0..1, "closer" discs are bigger
-      var hot = i === hotLens;
-      var scale = (.8 + .2 * depth) * (hot ? 1.1 : 1);
-      l.style.width = l.style.height = size + "px";
-      l.style.transform = "translate(" + (.53 * W + radius * Math.cos(a) - size / 2) + "px," +
-        (.46 * H - .76 * radius * Math.sin(a) - size / 2) + "px) rotate(67.04deg) scaleY(.7579934) scale(" + scale + ")";
-      l.style.zIndex = String(hot ? 25 : Math.round(20 * depth));
-      l.style.opacity = String(hot ? 1 : .4 + .45 * depth);
+  function layout() {
+    var g=geometry(),out=amountOut();
+    var cardX=card.offsetLeft+card.offsetWidth/2,cardY=card.offsetTop+card.offsetHeight/2;
+    var positions=lenses.map(function(lens,i){return model.slot(phase,i,g);});
+    if(reduceMotion.matches&&selected<0)selected=0;
+    // Let glass extend across the stage boundary; only the banner crops it.
+    var pad=Math.ceil(g.diameter*.65);
+    surface.style.left=surface.style.top=-pad+"px";
+    surface.style.width=(W+pad*2)+"px";surface.style.height=(H+pad*2)+"px";
+    var ready=glass&&glass.begin(W+pad*2,H+pad*2);
+    stage.classList.toggle("has-glass",!!ready);
+    // Equal size and one phase: the selected slot is the ONLY missing disc.
+    var spriteSize=g.diameter/.886;
+    positions.forEach(function(pos,i){
+      var lens=lenses[i];
+      lens.style.width=lens.style.height=spriteSize+"px";
+      lens.style.transform="translate("+(pos.x-spriteSize/2)+"px,"+(pos.y-spriteSize/2)+"px)";
+      lens.style.opacity=i===selected&&out>0?"0":"1";
+      lens.style.setProperty("--glint",String(.2+pos.depth*pos.depth*.65));
     });
-  }
-
-  function frame(ts) {
-    var dt = lastTs ? Math.min(ts - lastTs, 80) : 0;
-    lastTs = ts;
-    var hold = paused || reduceMotion.matches || hoverCard || focusWithin || hotLens >= 0 || !visible || document.hidden;
-    if (!hold) {
-      orbitMs += dt;
-      elapsed += dt;
-      if (elapsed > cfg.interval) { elapsed = 0; index = (index + 1) % stories.length; showStory(false); }
-      card.dataset.shown = String(elapsed < cfg.interval - 1500 || stories.length === 1);
-      layoutLenses();
+    var origin=selected>=0?positions[selected]:{x:cardX,y:cardY,depth:.6};
+    var travel=1-out,discW=g.diameter*1.05,discH=discW*.7579934;
+    var x=origin.x+(cardX-origin.x)*out,y=origin.y+(cardY-origin.y)*out;
+    var finalW=card.offsetWidth*1.1,finalH=card.offsetHeight*1.1;
+    var width=discW+(finalW-discW)*out,height=discH+(finalH-discH)*out;
+    var angle=67.04*travel*Math.PI/180;
+    // Stable exact depth ordering, without rounded z-index ties.
+    var surfaces=positions.map(function(pos,i){
+      var active=i===selected&&out>0;
+      return {x:active?x:pos.x,y:active?y:pos.y,w:active?width:discW,h:active?height:discH,
+        angle:active?angle:67.04*Math.PI/180,morph:active?out:0,
+        depth:pos.depth,glint:.2+pos.depth*pos.depth*.65,active:active};
+    }).sort(function(a,b){return a.depth-b.depth;});
+    if(ready){
+      var lift=smooth(out/.24),front=null;
+      surfaces.forEach(function(item){
+        glass.draw(item.x+pad,item.y+pad,item.w,item.h,item.angle,item.morph,item.glint,lift,item.active?1:0);
+        if(item.active)front=item;
+      });
+      // Blend occlusion order instead of jumping a rim across a neighboring rim.
+      if(front)glass.draw(front.x+pad,front.y+pad,front.w,front.h,front.angle,front.morph,front.glint,lift,2);
     }
-    raf = requestAnimationFrame(frame);
+    var startX=discW/finalW,startY=discH/finalH;
+    card.style.transform="translate("+(x-cardX)+"px,"+(y-cardY)+"px) rotate("+(67.04*travel)+"deg) scale("+
+      (startX+(1-startX)*out)+","+(startY+(1-startY)*out)+")";
+    card.style.opacity=out>0?"1":"0";
+    card.style.borderRadius=(20+200*travel)+"px";
+    card.style.setProperty("--text-opacity",String(smooth((out-.65)/.35)));
+    card.classList.toggle("glass-fallback",!ready);
+    var available=reduceMotion.matches||state==="hold";
+    if(available!==cardVisible){cardVisible=available;card.setAttribute("aria-hidden",String(!available));card.tabIndex=available?0:-1;}
   }
-
-  // ---- Interaction ---------------------------------------------------------
-  $('[data-action="prev"]').addEventListener("click", function () { step(-1); });
-  $('[data-action="next"]').addEventListener("click", function () { step(1); });
-  pauseBtn.addEventListener("click", function () { paused = !paused; elapsed = 0; revealCard(); updatePauseBtn(); });
-  card.addEventListener("pointerenter", function () { hoverCard = true; });
-  card.addEventListener("pointerleave", function () { hoverCard = false; });
-  root.addEventListener("focusin", function () { focusWithin = true; revealCard(); });
-  root.addEventListener("focusout", function (e) { focusWithin = root.contains(e.relatedTarget); });
-  root.addEventListener("keydown", function (e) {
-    if (e.key === "ArrowLeft") { step(-1); e.preventDefault(); }
-    if (e.key === "ArrowRight") { step(1); e.preventDefault(); }
-  });
-
-  // Discs: hover pauses the orbit and lights the disc up; click jumps to its story.
-  orbit.addEventListener("pointerover", function (e) {
-    var l = e.target.closest ? e.target.closest(".lens") : null;
-    if (!l) return;
-    hotLens = Number(l.dataset.index);
-    lenses.forEach(function (x, i) { x.classList.toggle("is-hot", i === hotLens); });
-    layoutLenses();
-  });
-  orbit.addEventListener("pointerout", function (e) {
-    var l = e.target.closest ? e.target.closest(".lens") : null;
-    if (!l || (e.relatedTarget && l.contains(e.relatedTarget))) return;
-    hotLens = -1;
-    l.classList.remove("is-hot");
-    layoutLenses();
-  });
-  orbit.addEventListener("click", function (e) {
-    var l = e.target.closest ? e.target.closest(".lens") : null;
-    if (!l) return;
-    var target = Number(l.dataset.index) % stories.length;
-    if (target === index) { window.open(stories[index].url, "_blank", "noopener"); return; }
-    index = target; elapsed = 0; showStory(true);
-  });
-
-  new ResizeObserver(function () { W = stage.clientWidth; H = stage.clientHeight; layoutLenses(); }).observe(stage);
+  function buildLenses(){
+    for(var i=0;i<LENSES;i++){var lens=document.createElement("div");lens.className="lens";orbit.appendChild(lens);lenses.push(lens);}
+  }
+  function advance(dt){
+    phase=model.future(phase,dt)%model.TAU;
+    if(state==="idle"){
+      elapsed+=dt;
+      if(elapsed>=GAP_MS){
+        var candidate=model.select(phase,geometry(),OUT_MS+READ_MS+IN_MS);
+        if(candidate>=0){selected=candidate;state="out";elapsed=0;}
+      }
+    }else if(state==="out"){
+      elapsed+=dt;if(elapsed>=OUT_MS){state="hold";elapsed=0;}
+    }else if(state==="hold"){
+      if(!(reading||focused))elapsed+=dt;
+      // After a long hover, wait for THIS gap's next visible return window.
+      if(elapsed>=READ_MS&&!(reading||focused)&&model.canReturn(phase,selected,geometry(),IN_MS)){state="in";elapsed=0;}
+    }else{
+      elapsed+=dt;
+      if(elapsed>=IN_MS){state="idle";elapsed=0;selected=-1;storyIndex=(storyIndex+1)%stories.length;setStory();}
+    }
+  }
+  function frame(ts){
+    raf=0;
+    if(document.hidden||!visible){lastTs=0;return;}
+    var dt=lastTs?Math.min(ts-lastTs,80):0;lastTs=ts;
+    if(!reduceMotion.matches)advance(dt);
+    layout();
+    if(!reduceMotion.matches)raf=requestAnimationFrame(frame);
+  }
+  function syncMotion() {
+    cancelAnimationFrame(raf); raf = 0; lastTs = 0;
+    if (!document.hidden && visible) raf = requestAnimationFrame(frame);
+  }
+  card.addEventListener("pointerenter", function () { reading = true; });
+  card.addEventListener("pointerleave", function () { reading = false; });
+  card.addEventListener("focus", function () { focused = true; });
+  card.addEventListener("blur", function () { focused = false; });
+  document.addEventListener("visibilitychange", syncMotion);
+  reduceMotion.addEventListener("change", function () { state="idle";elapsed=0;selected=-1;syncMotion(); });
+  new ResizeObserver(function () {
+    W = stage.clientWidth; H = stage.clientHeight;
+    if(state==="in"&&!model.canReturn(phase,selected,geometry(),Math.max(0,IN_MS-elapsed))){
+      // A viewport change can move the landing out of frame. Reverse continuously,
+      // keep the same selected slot, and wait for its next visible return window.
+      state="out";elapsed=OUT_MS*(1-Math.min(1,elapsed/IN_MS));
+    }
+    layout();
+  }).observe(stage);
   if ("IntersectionObserver" in window) {
-    new IntersectionObserver(function (entries) { visible = entries[0].isIntersecting; }).observe(stage);
+    new IntersectionObserver(function (entries) { visible = entries[0].isIntersecting; syncMotion(); }).observe(stage);
   }
-  reduceMotion.addEventListener("change", function () { if (reduceMotion.matches) paused = true; revealCard(); updatePauseBtn(); });
 
-  // ---- Go -------------------------------------------------------------------
-  buildLenses();
-  showStory(false);
-  updatePauseBtn();
-  layoutLenses();
-  raf = requestAnimationFrame(frame);
-  loadStories();
+  buildLenses(); setStory(); layout(); syncMotion();
+  try {
+    var source = new URL(qs.get("stories") || "stories.json", window.location.href);
+    if (source.origin === window.location.origin && /^https?:$/.test(source.protocol)) {
+      fetch(source.href, { cache: "no-cache" })
+        .then(function (r) { return r.ok ? r.json() : null; })
+        .then(function (data) {
+          var list = validStories(data);
+          if (list) { stories = list; storyIndex = 0; setStory(); layout(); }
+        }).catch(function () { /* Keep public fallback stories. */ });
+    }
+  } catch (e) { /* Keep public fallback stories. */ }
 })();
 </script>
 </body>
